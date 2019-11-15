@@ -1,6 +1,7 @@
 #choose os 
 OS="" #f = fedora, c = cent, d = ubuntu/debian
-#auto detect package manager
+ports=(80 tcp 443 tcp 22 tcp 55 udp)      #example array0=(80tcp 443udp 88tcp 22udp)
+#auto detect package manager/os
 declare -A osInfo;
 osInfo[/etc/redhat-release]=red
 osInfo[/etc/arch-release]=arch
@@ -62,5 +63,36 @@ password_sudo=$(< /dev/urandom tr -dc _A-Z-a-z-0-9 | head -c${1:-8};)
 echo $password_root
 echo $password_sudo
 #change all sudo users to this new password
-sudos=$(getent group root wheel adm admin | cut -d : -f 4)
-echo $sudos
+sudos="$(getent group root wheel adm admin | cut -d : -f 4)"
+echo $sudos;
+sudos=(${sudos//,/ })
+echo "root:$password_root" >> firstRun.txt
+for i in "${sudos[@]}"
+do
+	echo "$i:$password_sudo" >> firstRun.txt
+        #change password
+        echo "new" | sudo passwd $i --stdin 
+done
+#firewall
+#redhat (fedora, cent)
+if [ "$OS" == "red" ]
+then
+	echo "updating firewalld";
+	#todo
+        for ((i=0; i < ${#ports[@]}; i+=2))
+        do
+        port=${ports[$i]}
+        protocal=${ports[$i+1]}
+	echo "port:$port"
+        echo "protocal:$protocal"
+        #firewalld rule add
+        done
+fi
+if [ "$OS" != "red" ]
+then
+	echo "updating iptables";
+	#todo
+fi
+
+
+#save info
