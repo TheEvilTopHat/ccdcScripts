@@ -1,14 +1,17 @@
 #Getting Server Info
-printf "---Server Information---\n" > reconReport.txt
+echo "---Server Information---" > reconReport.txt
 uname -a >> reconReport.txt
+echo ""
 
 #Checking in use ports
-printf "---In use ports---\n" >> reconReport.txt
+echo "---In use ports---" >> reconReport.txt
 netstat -tulpn | grep LISTEN >> reconReport.txt
+echo ""
 
 #Getting all users
-printf "---All Users---" >> reconReport.txt
+echo "---All Users---" >> reconReport.txt
 less /etc/passwd >> reconReport.txt
+echo ""
 
 #Getting all programs currently running
 ps >> reconReport.txt
