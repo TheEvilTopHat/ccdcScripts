@@ -1,0 +1,15 @@
+name: CI
+
+on: [push]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v1
+    - name: first script test
+      run: sudo bash first.sh
+    - name: Run recon script
+      run: sudo bash recon.sh
