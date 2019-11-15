@@ -73,7 +73,7 @@ for i in "${sudos[@]}"
 do
 	echo "$i:$password_sudo" >> firstRun.txt
         #change password
-        echo "$password_sudo" | sudo passwd $i --stdin 
+        echo -e "linux$password_sudo\n$password_sudo" | passwd $i
 done
 #firewall
 #redhat (fedora, cent)
