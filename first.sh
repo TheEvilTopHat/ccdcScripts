@@ -1,3 +1,5 @@
+#!/usr/bin/env bash
+
 #choose os 
 OS="" #f = fedora, c = cent, d = ubuntu/debian
 ports=(80 tcp 443 tcp 22 tcp 55 udp)      #example array0=(80tcp 443udp 88tcp 22udp)
@@ -71,7 +73,7 @@ for i in "${sudos[@]}"
 do
 	echo "$i:$password_sudo" >> firstRun.txt
         #change password
-        echo "new" | sudo passwd $i --stdin 
+        echo "$password_sudo" | sudo passwd $i --stdin 
 done
 #firewall
 #redhat (fedora, cent)
