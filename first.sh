@@ -81,6 +81,15 @@ done
 if [ "$OS" == "red" ]
 then
 	echo "updating firewalld";
+        #defulat drop
+        #ipv4
+        iptables -P INPUT DROP
+        iptables -P FORWARD DROP
+        #ipv6
+        sudo ip6tables -P INPUT DROP
+        sudo ip6tables -P FORWARD DROP
+        sudo ip6tables -P OUTPUT DROP
+
 	#todo
         for ((i=0; i < ${#ports[@]}; i+=2))
         do
@@ -89,7 +98,17 @@ then
 	echo "port:$port"
         echo "protocal:$protocal"
         #firewalld rule add
+        iptables -A ${protocal^^} -p $protocal --dport $port -j ACCEPT
         done
+
+        #reject all trafic left
+        iptables -A INPUT -p udp -j REJECT --reject-with icmp-port-unreachable
+        iptables -A INPUT -p tcp -j REJECT --reject-with tcp-reset
+        iptables -A INPUT -j REJECT --reject-with icmp-proto-unreachable
+
+        #save rules
+        service iptables-persistent save
+
 fi
 if [ "$OS" != "red" ]
 then
