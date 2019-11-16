@@ -95,6 +95,7 @@ then
 fi
 #iptable rules
 #defulat drop
+/usr/sbin/iptables -Z
 #ipv4
 /usr/sbin/iptables -P INPUT DROP
 /usr/sbin/iptables -P FORWARD DROP
