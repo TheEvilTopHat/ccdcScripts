@@ -3,7 +3,7 @@
 #choose os 
 OS="" #f = fedora, c = cent, d = ubuntu/debian
 ports=(80 tcp 443 tcp 22 tcp 55 udp)      #example array0=(80tcp 443udp 88tcp 22udp)
-outPorts=(80 tcp 443 tcp 21 tcp 53 udp 53 tcp)      #this is ports going out
+#outPorts=(80 tcp 443 tcp 21 tcp 53 udp 53 tcp)      #this is ports going out
 #auto detect package manager/os
 declare -A osInfo;
 osInfo[/etc/redhat-release]=red
@@ -126,15 +126,15 @@ do
         /usr/sbin/iptables -A INPUT -p $protocal --dport $port -j ACCEPT
 done
 #output
-for ((i=0; i < ${#outPorts[@]}; i+=2))
-do
-        port=${outPorts[$i]}
-        protocal=${outPorts[$i+1]}
-        echo "port:$port"
-        echo "protocal:$protocal"
+#for ((i=0; i < ${#outPorts[@]}; i+=2))
+#do
+#        port=${outPorts[$i]}
+#        protocal=${outPorts[$i+1]}
+#        echo "port:$port"
+#        echo "protocal:$protocal"
         #firewalld rule add
-        /usr/sbin/iptables -A OUTPUT -p $protocal --sport $port -j ACCEPT
-done
+#        /usr/sbin/iptables -A OUTPUT -p $protocal --sport $port -j ACCEPT
+#done
 
 #reject all trafic left
 /usr/sbin/iptables -A INPUT -p udp -j REJECT --reject-with icmp-port-unreachable
