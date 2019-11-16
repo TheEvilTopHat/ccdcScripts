@@ -114,6 +114,10 @@ then
         /usr/sbin/iptables -A INPUT -p tcp -j REJECT --reject-with tcp-reset
         /usr/sbin/iptables -A INPUT -j REJECT --reject-with icmp-proto-unreachable
 
+        #save rules to text file 
+        /usr/sbin/iptables-save > rules.txt
+        /usr/sbin/ip6tables-save > rules6.txt
+
         #save rules debain ubuntu
         /usr/sbin/service iptables-persistent save
 
