@@ -98,7 +98,7 @@ then
 	echo "port:$port"
         echo "protocal:$protocal"
         #firewalld rule add
-        iptables -A ${protocal^^} -p $protocal --dport $port -j ACCEPT
+        iptables -A INPUT -p $protocal --dport $port -j ACCEPT
         done
 
         #reject all trafic left
