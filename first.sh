@@ -107,6 +107,9 @@ fi
 /usr/sbin/iptables/iptables -A INPUT -i lo -j ACCEPT
 /usr/sbin/iptables/iptables -A OUTPUT -i lo -j ACCEPT
 
+#allow established traffic
+iptables -A INPUT -m state --state RELATED,ESTABLISHED -j ACCEPT
+
 #drop invalid traffic
 /usr/sbin/iptables/iptables -A INPUT -m conntrack --ctstate INVALID -j DROP
 
