@@ -85,7 +85,8 @@ then
         systemctl disable firewalld
         systemctl stop firewalld
         echo "starting iptables"
-        dnf install iptables-services -y
+        #dnf install iptables-services -y
+        yum install iptables-services
         touch /etc/sysconfig/iptables
         systemctl start iptables
         systemctl enable iptables
@@ -149,4 +150,8 @@ echo "updating iptables";
 #safe rules cent
 /usr/sbin/chkconfig iptables on
 /usr/sbin/service iptables save
+
 #save info
+#install fail2ban
+apt-get install fail2ban
+yum install fail2ban
