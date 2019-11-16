@@ -80,7 +80,13 @@ done
 #redhat (fedora, cent)
 if [ "$OS" == "red" ]
 then
-	echo "updating firewalld";
+        echo "updating firewalld"
+
+fi
+#ubutud debian
+if [ "$OS" != "red" ]
+then
+	echo "updating iptables";
         #defulat drop
         #ipv4
         iptables -P INPUT DROP
@@ -108,12 +114,6 @@ then
 
         #save rules
         service iptables-persistent save
-
-fi
-if [ "$OS" != "red" ]
-then
-	echo "updating iptables";
-	#todo
 fi
 
 
