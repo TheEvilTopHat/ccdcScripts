@@ -89,12 +89,12 @@ then
 	echo "updating iptables";
         #defulat drop
         #ipv4
-        iptables -P INPUT DROP
-        iptables -P FORWARD DROP
+        /usr/sbin/iptables -P INPUT DROP
+        /usr/sbin/iptables -P FORWARD DROP
         #ipv6
-        sudo ip6tables -P INPUT DROP
-        sudo ip6tables -P FORWARD DROP
-        sudo ip6tables -P OUTPUT DROP
+        /usr/sbin/ip6tables -P INPUT DROP
+        /usr/sbin/ip6tables -P FORWARD DROP
+        /usr/sbin/ip6tables -P OUTPUT DROP
 
 	#todo
         for ((i=0; i < ${#ports[@]}; i+=2))
@@ -104,16 +104,16 @@ then
 	echo "port:$port"
         echo "protocal:$protocal"
         #firewalld rule add
-        iptables -A INPUT -p $protocal --dport $port -j ACCEPT
+        /usr/sbin/iptables -A INPUT -p $protocal --dport $port -j ACCEPT
         done
 
         #reject all trafic left
-        iptables -A INPUT -p udp -j REJECT --reject-with icmp-port-unreachable
-        iptables -A INPUT -p tcp -j REJECT --reject-with tcp-reset
-        iptables -A INPUT -j REJECT --reject-with icmp-proto-unreachable
+        /usr/sbin/iptables -A INPUT -p udp -j REJECT --reject-with icmp-port-unreachable
+        /usr/sbin/iptables -A INPUT -p tcp -j REJECT --reject-with tcp-reset
+        /usr/sbin/iptables -A INPUT -j REJECT --reject-with icmp-proto-unreachable
 
         #save rules
-        service iptables-persistent save
+        /usr/sbin/service iptables-persistent save
 fi
 
 
