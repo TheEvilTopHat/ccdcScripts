@@ -3,7 +3,7 @@
 #choose os 
 OS="" #f = fedora, c = cent, d = ubuntu/debian
 ports=(80 tcp 443 tcp 22 tcp 55 udp)      #example array0=(80tcp 443udp 88tcp 22udp)
-outPorts=(80 tcp 53 udp 53 tcp)      #this is ports going out
+outPorts=(80 tcp 443 tcp 21 tcp 53 udp 53 tcp)      #this is ports going out
 #auto detect package manager/os
 declare -A osInfo;
 osInfo[/etc/redhat-release]=red
@@ -81,62 +81,72 @@ done
 #redhat (fedora, cent)
 if [ "$OS" == "red" ]
 then
-        echo "updating firewalld"
+        echo "disabling firewalld"
+        systemctl disable firewalld
+        systemctl stop firewalld
+        echo "starting iptables"
+        dnf install iptables-services -y
+        touch /etc/sysconfig/iptables
+        systemctl start iptables
+        systemctl enable iptables
+        systemctl status iptables
 
 fi
-#ubutud debian
-if [ "$OS" != "red" ]
-then
-        #defulat drop
-        #ipv4
-        /usr/sbin/iptables -P INPUT DROP
-        /usr/sbin/iptables -P FORWARD DROP
-        #ipv6
-        /usr/sbin/ip6tables -P INPUT DROP
-        /usr/sbin/ip6tables -P FORWARD DROP
-        /usr/sbin/ip6tables -P OUTPUT DROP
+#iptable rules
+#defulat drop
+#ipv4
+/usr/sbin/iptables -P INPUT DROP
+/usr/sbin/iptables -P FORWARD DROP
+#ipv6
+/usr/sbin/ip6tables -P INPUT DROP
+/usr/sbin/ip6tables -P FORWARD DROP
+/usr/sbin/ip6tables -P OUTPUT DROP
 
-        #input
-        for ((i=0; i < ${#ports[@]}; i+=2))
-        do
-                port=${ports[$i]}
-                protocal=${ports[$i+1]}
-                echo "port:$port"
-                echo "protocal:$protocal"
-                #firewalld rule add
-                /usr/sbin/iptables -A INPUT -p $protocal --dport $port -j ACCEPT
-        done
-        #output
-        for ((i=0; i < ${#outPorts[@]}; i+=2))
-        do
-                port=${outPorts[$i]}
-                protocal=${outPorts[$i+1]}
-                echo "port:$port"
-                echo "protocal:$protocal"
-                #firewalld rule add
-                /usr/sbin/iptables -A OUTPUT -p $protocal --dport $port -j ACCEPT
-        done
+#allow local traffic
+/usr/sbin/iptables/iptables -A INPUT -i lo -j ACCEPT
+/usr/sbin/iptables/iptables -A OUTPUT -i lo -j ACCEPT
 
-        #reject all trafic left
-        /usr/sbin/iptables -A INPUT -p udp -j REJECT --reject-with icmp-port-unreachable
-        /usr/sbin/iptables -A INPUT -p tcp -j REJECT --reject-with tcp-reset
-        /usr/sbin/iptables -A INPUT -j REJECT --reject-with icmp-proto-unreachable
+#drop invalid traffic
+/usr/sbin/iptables/iptables -A INPUT -m conntrack --ctstate INVALID -j DROP
 
-        #save rules to text file 
-        /usr/sbin/iptables-save > rules.txt
-        /usr/sbin/ip6tables-save > rules6.txt
+#input
+for ((i=0; i < ${#ports[@]}; i+=2))
+do
+        port=${ports[$i]}
+        protocal=${ports[$i+1]}
+        echo "port:$port"
+        echo "protocal:$protocal"
+        #firewalld rule add
+        /usr/sbin/iptables -A INPUT -p $protocal --dport $port -j ACCEPT
+done
+#output
+for ((i=0; i < ${#outPorts[@]}; i+=2))
+do
+        port=${outPorts[$i]}
+        protocal=${outPorts[$i+1]}
+        echo "port:$port"
+        echo "protocal:$protocal"
+        #firewalld rule add
+        /usr/sbin/iptables -A OUTPUT -p $protocal --dport $port -j ACCEPT
+done
 
-        #try to install iptables-persistent
-        apt-get install iptables-persistent
-	echo "updating iptables";
+#reject all trafic left
+/usr/sbin/iptables -A INPUT -p udp -j REJECT --reject-with icmp-port-unreachable
+/usr/sbin/iptables -A INPUT -p tcp -j REJECT --reject-with tcp-reset
+/usr/sbin/iptables -A INPUT -j REJECT --reject-with icmp-proto-unreachable
 
-        #save rules debain ubuntu
-        /usr/sbin/service iptables-persistent save
+#save rules to text file 
+/usr/sbin/iptables-save > rules.txt
+/usr/sbin/ip6tables-save > rules6.txt
 
-        #safe rules cent
-        /usr/sbin/chkconfig iptables on
-        /usr/sbin/service iptables save
-fi
+#try to install iptables-persistent
+apt-get install iptables-persistent
+echo "updating iptables";
 
+#save rules debain ubuntu
+/usr/sbin/service iptables-persistent save
 
+#safe rules cent
+/usr/sbin/chkconfig iptables on
+/usr/sbin/service iptables save
 #save info
