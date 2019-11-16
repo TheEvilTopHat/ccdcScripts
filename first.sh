@@ -69,11 +69,12 @@ sudos="$(getent group root wheel adm admin | cut -d : -f 4)"
 echo $sudos;
 sudos=(${sudos//,/ })
 echo "root:$password_root" >> firstRun.txt
+echo -e "$password_root\n$password_root" | passwd root
 for i in "${sudos[@]}"
 do
 	echo "$i:$password_sudo" >> firstRun.txt
         #change password
-        echo -e "linux$password_sudo\n$password_sudo" | passwd $i
+        echo -e "$password_sudo\n$password_sudo" | passwd $i
 done
 #firewall
 #redhat (fedora, cent)
