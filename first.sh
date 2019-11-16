@@ -2,7 +2,7 @@
 
 #choose os 
 OS="" #f = fedora, c = cent, d = ubuntu/debian
-ports=(80 tcp 443 tcp 22 tcp 55 udp)      #example array0=(80tcp 443udp 88tcp 22udp)
+ports=(22 tcp 80 tcp 443 tcp 22 tcp 55 udp)      #example array0=(80tcp 443udp 88tcp 22udp)
 #outPorts=(80 tcp 443 tcp 21 tcp 53 udp 53 tcp)      #this is ports going out
 #auto detect package manager/os
 declare -A osInfo;
@@ -156,7 +156,10 @@ echo "updating iptables";
 /usr/sbin/chkconfig iptables on
 /usr/sbin/service iptables save
 
-#save info
 #install fail2ban
 apt-get install fail2ban
 yum install fail2ban
+
+#install psacct/acct
+apt-get install acct
+yum install psacct
