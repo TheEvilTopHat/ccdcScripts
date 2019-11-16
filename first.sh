@@ -86,6 +86,8 @@ fi
 #ubutud debian
 if [ "$OS" != "red" ]
 then
+        #try to install iptables-persistent
+        apt-get install iptables-persistent
 	echo "updating iptables";
         #defulat drop
         #ipv4
@@ -112,8 +114,12 @@ then
         /usr/sbin/iptables -A INPUT -p tcp -j REJECT --reject-with tcp-reset
         /usr/sbin/iptables -A INPUT -j REJECT --reject-with icmp-proto-unreachable
 
-        #save rules
+        #save rules debain ubuntu
         /usr/sbin/service iptables-persistent save
+
+        #safe rules cent
+        /usr/sbin/chkconfig iptables on
+        /usr/sbin/service iptables save
 fi
 
 
