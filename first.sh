@@ -65,7 +65,7 @@ password_sudo=$(< /dev/urandom tr -dc _A-Z-a-z-0-9 | head -c${1:-8};)
 echo $password_root
 echo $password_sudo
 #change all sudo users to this new password
-sudos="$(getent group root wheel adm admin | cut -d : -f 4)"
+sudos="$(getent group root wheel adm admin sudo | cut -d : -f 4)"
 echo $sudos;
 sudos=(${sudos//,/ })
 echo "root:$password_root" >> firstRun.txt
