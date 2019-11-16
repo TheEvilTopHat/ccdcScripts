@@ -3,6 +3,7 @@
 #choose os 
 OS="" #f = fedora, c = cent, d = ubuntu/debian
 ports=(80 tcp 443 tcp 22 tcp 55 udp)      #example array0=(80tcp 443udp 88tcp 22udp)
+outPorts=(80 tcp 53 udp 53 tcp)      #this is ports going out
 #auto detect package manager/os
 declare -A osInfo;
 osInfo[/etc/redhat-release]=red
@@ -86,9 +87,6 @@ fi
 #ubutud debian
 if [ "$OS" != "red" ]
 then
-        #try to install iptables-persistent
-        apt-get install iptables-persistent
-	echo "updating iptables";
         #defulat drop
         #ipv4
         /usr/sbin/iptables -P INPUT DROP
@@ -98,15 +96,25 @@ then
         /usr/sbin/ip6tables -P FORWARD DROP
         /usr/sbin/ip6tables -P OUTPUT DROP
 
-	#todo
+        #input
         for ((i=0; i < ${#ports[@]}; i+=2))
         do
-        port=${ports[$i]}
-        protocal=${ports[$i+1]}
-	echo "port:$port"
-        echo "protocal:$protocal"
-        #firewalld rule add
-        /usr/sbin/iptables -A INPUT -p $protocal --dport $port -j ACCEPT
+                port=${ports[$i]}
+                protocal=${ports[$i+1]}
+                echo "port:$port"
+                echo "protocal:$protocal"
+                #firewalld rule add
+                /usr/sbin/iptables -A INPUT -p $protocal --dport $port -j ACCEPT
+        done
+        #output
+        for ((i=0; i < ${#outPorts[@]}; i+=2))
+        do
+                port=${outPorts[$i]}
+                protocal=${outPorts[$i+1]}
+                echo "port:$port"
+                echo "protocal:$protocal"
+                #firewalld rule add
+                /usr/sbin/iptables -A OUTPUT -p $protocal --dport $port -j ACCEPT
         done
 
         #reject all trafic left
@@ -117,6 +125,10 @@ then
         #save rules to text file 
         /usr/sbin/iptables-save > rules.txt
         /usr/sbin/ip6tables-save > rules6.txt
+
+        #try to install iptables-persistent
+        apt-get install iptables-persistent
+	echo "updating iptables";
 
         #save rules debain ubuntu
         /usr/sbin/service iptables-persistent save
