@@ -131,7 +131,7 @@ do
         echo "port:$port"
         echo "protocal:$protocal"
         #firewalld rule add
-        /usr/sbin/iptables -A OUTPUT -p $protocal --dport $port -j ACCEPT
+        /usr/sbin/iptables -A OUTPUT -p $protocal --sport $port -j ACCEPT
 done
 
 #reject all trafic left
