@@ -10,6 +10,7 @@ fail2ban
 
 #ids
 OSSEC
+snort
 
 #kernel hardening
 turn on SELinux
