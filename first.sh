@@ -157,6 +157,19 @@ echo "updating iptables";
 /usr/sbin/chkconfig iptables on
 /usr/sbin/service iptables save
 
+#install rsync
+apt-get install rsync
+yum install rsync
+
+#make dir for rysnc to store 
+mkdir /bb/
+mkdir /bb/etc/
+mkdir /bb/var/
+
+#use rsync to make a copy of all critical files
+rsync -avzP /etc/ /bb/etc/
+rsync -avzP /var/ /bb/var/
+
 #install fail2ban
 apt-get install fail2ban
 yum install fail2ban
