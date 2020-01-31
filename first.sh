@@ -165,9 +165,9 @@ rsync -av /var/ /bb/var/
 mkdir /cool/
 chmod 777 /cool/
 #ls -> jls
-echo "ls -> jls"
-echo "alias jls='ls'" >> /etc/profile.d/00-aliases.sh
-echo "alias ls='whoami >> /cool/.incidents.txt; echo 'ls' >> /cool/.incidents.txt;" >> /etc/profile.d/00-aliases.sh
+echo "ls -> jls";
+echo "alias jls='ls'" >> /etc/profile.d/00-aliases.sh;
+echo "alias ls='whoami >> /cool/.incidents.txt;" >> /etc/profile.d/00-aliases.sh
 #pwd -> jpwd
 echo "pwd -> jpwd"
 echo "alias jpwd='pwd'" >> /etc/profile.d/00-aliases.sh
