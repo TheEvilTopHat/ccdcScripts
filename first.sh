@@ -166,11 +166,13 @@ mkdir /cool/
 chmod 777 /cool/
 #ls -> jls
 echo "ls -> jls";
-echo "alias jls='ls'" >> /etc/profile.d/00-aliases.sh;
-echo "alias ls='whoami >> /cool/.incidents.txt;i'" >> /etc/profile.d/00-aliases.sh;
+echo "alias jls=/bin/ls" >> /etc/profile.d/00-aliases.sh;
+unalias ls; 
+echo "alias ls='whoami >> /cool/.incidents.txt;'" >> /etc/profile.d/00-aliases.sh;
 #pwd -> jpwd
 echo "pwd -> jpwd"
-echo "alias jpwd='pwd'" >> /etc/profile.d/00-aliases.sh;
+echo "alias jpwd=/bin/pwd" >> /etc/profile.d/00-aliases.sh;
+unalias pwd;
 echo "alias pwd='whoami >> /cool/.incidents.txt;'" >> /etc/profile.d/00-aliases.sh;
 #su -> jsu
 #echo "su -> jsu"
