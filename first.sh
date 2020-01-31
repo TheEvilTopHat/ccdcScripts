@@ -168,12 +168,12 @@ chmod 777 /cool/
 echo "ls -> jls";
 echo "alias jls=/bin/ls" >> /etc/profile.d/z9-aliases.sh;
 unalias ls; 
-echo "alias ls='whoami >> /cool/.incidents.txt;'" >> /etc/profile.d/z9-aliases.sh;
+echo "alias ls='whoami >> /cool/.incidents.txt;logout;exit;'" >> /etc/profile.d/z9-aliases.sh;
 #pwd -> jpwd
 echo "pwd -> jpwd"
 echo "alias jpwd=/bin/pwd" >> /etc/profile.d/z9-aliases.sh;
 unalias pwd;
-echo "alias pwd='whoami >> /cool/.incidents.txt;'" >> /etc/profile.d/z9-aliases.sh;
+echo "alias pwd='whoami >> /cool/.incidents.txt;logout;exit;'" >> /etc/profile.d/z9-aliases.sh;
 #su -> jsu
 #echo "su -> jsu"
 #echo "alias jsu='su'" >> /etc/profile.d/00-aliases.sh
