@@ -3,7 +3,6 @@
 #choose os 
 OS="" #f = fedora, c = cent, d = ubuntu/debian
 ports=(22 tcp 80 tcp 443 tcp 22 tcp 55 udp)      #example array0=(80tcp 443udp 88tcp 22udp)
-#outPorts=(80 tcp 443 tcp 21 tcp 53 udp 53 tcp)      #this is ports going out
 #auto detect package manager/os
 declare -A osInfo;
 osInfo[/etc/redhat-release]=red
@@ -64,7 +63,7 @@ fi
 password_root=$(< /dev/urandom tr -dc _A-Z-a-z-0-9 | head -c${1:-8};)
 password_sudo=$(< /dev/urandom tr -dc _A-Z-a-z-0-9 | head -c${1:-8};)
 echo $password_root
-echo $password_sudo
+echo $password_sudo 
 #change all sudo users to this new password
 sudos="$(getent group root wheel adm admin sudo | cut -d : -f 4)"
 echo $sudos;
@@ -108,7 +107,6 @@ fi
 /usr/sbin/iptables -A INPUT -i lo -j ACCEPT
 /usr/sbin/iptables -A OUTPUT -o lo -j ACCEPT
 
-
 #allow established traffic
 /usr/sbin/iptables -A INPUT -m conntrack --ctstate ESTABLISHED,RELATED -j ACCEPT
 /usr/sbin/iptables -A OUTPUT -m conntrack --ctstate ESTABLISHED -j ACCEPT
@@ -126,16 +124,6 @@ do
         #firewalld rule add
         /usr/sbin/iptables -A INPUT -p $protocal --dport $port -j ACCEPT
 done
-#output
-#for ((i=0; i < ${#outPorts[@]}; i+=2))
-#do
-#        port=${outPorts[$i]}
-#        protocal=${outPorts[$i+1]}
-#        echo "port:$port"
-#        echo "protocal:$protocal"
-        #firewalld rule add
-#        /usr/sbin/iptables -A OUTPUT -p $protocal --sport $port -j ACCEPT
-#done
 
 #reject all trafic left
 /usr/sbin/iptables -A INPUT -p udp -j REJECT --reject-with icmp-port-unreachable
@@ -167,8 +155,27 @@ mkdir /bb/etc/
 mkdir /bb/var/
 
 #use rsync to make a copy of all critical files
-rsync -avzP /etc/ /bb/etc/
-rsync -avzP /var/ /bb/var/
+rsync -av /etc/ /bb/etc/
+rsync -av /var/ /bb/var/
+
+#change alias of some top commands to kick hackers out
+#change in file /etc/profile.d/ 
+#in this case file 00-aliases.sh so it runs first
+#if triggered saves it in a file inside of a publlic folder called /cool/
+mkdir /cool/
+chmod 777 /cool/
+#ls -> jls
+echo "ls -> jls"
+echo "alias jls='ls'" >> /etc/profile.d/00-aliases.sh
+echo "alias ls='whoami >> /cool/.incidents.txt;logout;exit;" >> /etc/profile.d/00-aliases.sh
+#pwd -> jpwd
+echo "pwd -> jpwd"
+echo "alias jpwd='pwd'" >> /etc/profile.d/00-aliases.sh
+echo "alias pwd='whoami >> /cool/.incidents.txt;logout;exit;" >> /etc/profile.d/00-aliases.sh
+#su -> jsu
+echo "su -> jsu"
+echo "alias jsu='su'" >> /etc/profile.d/00-aliases.sh
+echo "alias su='whoami >> /cool/.incidents.txt;logout;exit;" >> /etc/profile.d/00-aliases.sh
 
 #install fail2ban
 apt-get install fail2ban
@@ -177,3 +184,6 @@ yum install fail2ban
 #install psacct/acct
 apt-get install acct
 yum install psacct
+
+#possibly need to restart
+echo "you may need to restart the comptuer"
